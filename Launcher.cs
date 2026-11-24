@@ -1,5 +1,7 @@
 using System;
-using System.Diagnostics;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
+using System.Threading;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -23,9 +25,21 @@ internal static class Launcher {
                     catch (IOException) { if (!File.Exists(target)) throw; }
                 } finally { File.Delete(temp); }
             }
-            var shell = Path.Combine(Environment.SystemDirectory, @"WindowsPowerShell\v1.0\powershell.exe");
-            Process.Start(new ProcessStartInfo(shell, "-NoProfile -STA -ExecutionPolicy Bypass -File \"" +
-                Path.Combine(root, "Iniciar.ps1") + "\"") { UseShellExecute = false, CreateNoWindow = true });
+            using (var runspace = RunspaceFactory.CreateRunspace()) {
+                runspace.ApartmentState = ApartmentState.STA;
+                runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
+                runspace.Open();
+                using (var shell = PowerShell.Create()) {
+                    shell.Runspace = runspace;
+                    shell.AddCommand("Set-ExecutionPolicy").AddParameter("Scope", "Process")
+                        .AddParameter("ExecutionPolicy", "Bypass").AddParameter("Force").Invoke();
+                    shell.Commands.Clear();
+                    shell.AddCommand(Path.Combine(root, "Iniciar.ps1")).Invoke();
+                    if (shell.HadErrors && shell.Streams.Error.Count > 0)
+                        throw new InvalidOperationException(shell.Streams.Error[0].ToString());
+                }
+            }
         } catch (Exception error) { MessageBox.Show(error.Message, "Valystria Outbreak"); }
     }
 }
+

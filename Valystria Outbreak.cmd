@@ -1,2 +1,2 @@
 @echo off
-start "" powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0Iniciar.ps1"
+start "" "%~dp0Valystria Outbreak.exe"
