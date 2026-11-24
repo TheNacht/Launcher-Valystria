@@ -93,7 +93,7 @@ function Sync-Pack {
     $tree = Invoke-RestMethod "$api/git/trees/${commit}?recursive=1" -TimeoutSec 30
     if ($tree.truncated -or !$tree.tree) { throw 'GitHub devolvio una lista incompleta.' }
     $files = @($tree.tree | Where-Object { $_.mode -in '100644','100755' -and $_.path -match '^Modpack/(mods|config|defaultconfigs|resourcepacks|shaderpacks|kubejs|scripts|global_packs)/' -and $_.path -notlike '*/.gitkeep' })
-    if (!($files | Where-Object path -like 'Modpack/mods/*.jar')) { throw 'Todavia no hay mods publicados en GitHub.' }
+
     $ledger = Join-Path $settingsDir 'archivos-pack.json'
     $old = @()
     if (Test-Path $ledger) { $old = @((Get-Content $ledger -Raw | ConvertFrom-Json).files) }
@@ -124,7 +124,7 @@ function Sync-Pack {
 }
 function Get-PackStatus {
     $mods = @(Get-ChildItem -LiteralPath (Join-Path $config.carpeta 'mods') -File -Filter '*.jar' -ErrorAction SilentlyContinue)
-    if (!$mods.Count) { return 'Coloca los archivos .jar del pack en Modpack\mods.' }
+    if (!$mods.Count) { return 'Forge 47.4.28 para Minecraft 1.20.1. Aun no hay mods publicados.' }
     return "Modpack listo: $($mods.Count) archivos .jar en mods."
 }
 $status = Add-Label (Get-PackStatus) 145 12 88
@@ -142,16 +142,30 @@ $nameBox.Text = [string]$config.nombre
 $nameBox.Enabled = $offline.Checked
 $form.Controls.Add($nameBox)
 $offline.Add_CheckedChanged({ $nameBox.Enabled = $offline.Checked; if ($offline.Checked) { $nameBox.Focus() } })
+function Get-LauncherPython {
+    $root = Join-Path $settingsDir 'python-3.12.10'
+    $python = Join-Path $root 'tools\python.exe'
+    if (!(Test-Path -LiteralPath $python)) {
+        $stage = Join-Path $settingsDir ([guid]::NewGuid().ToString())
+        [void][IO.Directory]::CreateDirectory($stage)
+        try {
+            $zip = Join-Path $stage 'python.zip'
+            Invoke-WebRequest 'https://api.nuget.org/v3-flatcontainer/python/3.12.10/python.3.12.10.nupkg' -UseBasicParsing -OutFile $zip -TimeoutSec 300
+            $unpacked = Join-Path $stage 'unpacked'
+            Expand-Archive -LiteralPath $zip -DestinationPath $unpacked
+            if (!(Test-Path (Join-Path $unpacked 'tools\python.exe'))) { throw 'Descarga de Python incompleta.' }
+            [IO.Directory]::Move($unpacked,$root)
+        } finally {
+            if (Test-Path -LiteralPath $stage) { [IO.Directory]::Delete($stage,$true) }
+        }
+    }
+    return $python
+}
 $play = Add-Button 'JUGAR' 32 298 496 {
     $play.Enabled = $false
     try {
         if (!$script:packReady) { Sync-Pack; $script:packReady = $true }
-        if (!(Get-ChildItem -LiteralPath (Join-Path $config.carpeta 'mods') -File -Filter '*.jar' -ErrorAction SilentlyContinue | Select-Object -First 1)) { throw (Get-PackStatus) }
-        if (!$config.forge) {
-            $version = [Microsoft.VisualBasic.Interaction]::InputBox('Version exacta de Forge de tu pack (47.x.x)', 'Valystria Outbreak')
-            if ($version -notmatch '^47\.\d+\.\d+$') { throw 'Se necesita la version exacta de Forge.' }
-            $config.forge = $version
-        }
+        $config.forge = '47.4.28'
         $config.local = $offline.Checked
         $config.nombre = $nameBox.Text.Trim()
         if ($config.local -and $config.nombre -notmatch '^[A-Za-z0-9_]{3,16}$') {
@@ -165,11 +179,7 @@ $play = Add-Button 'JUGAR' 32 298 496 {
         $config | ConvertTo-Json | Set-Content $settingsFile -Encoding UTF8
         $status.Text = 'Preparando el juego. El primer inicio puede tardar varios minutos.'
         $form.Refresh()
-        $python = Join-Path $settingsDir 'runtime\Scripts\python.exe'
-        if (!(Test-Path $python)) {
-            & python -m venv (Join-Path $settingsDir 'runtime')
-            if (!(Test-Path $python)) { throw 'Instala Python 3.11 o posterior para Windows y activa la opcion de agregar Python al PATH.' }
-        }
+        $python = Get-LauncherPython
         & $python -m pip install --disable-pip-version-check 'minecraft-launcher-lib==8.0' 'keyring>=25,<26'
         if ($LASTEXITCODE) { throw 'No se pudieron preparar las dependencias de Python.' }
         $env:VALYSTRIA_HOME = $settingsDir
@@ -236,15 +246,17 @@ def account(client):
 def start():
     home = Path(os.environ["VALYSTRIA_HOME"])
     config = json.loads((home / "juego.json").read_text(encoding="utf-8-sig"))
-    java = shutil.which("java")
-    if not java:
-        raise RuntimeError("Instala Java 17 de 64 bits y agrega java al PATH.")
     game = Path(config["carpeta"])
     runtime = home / "minecraft"
-    forge = "1.20.1-" + config["forge"]
+    runtime.mkdir(exist_ok=True)
+    version = "1.20.1"
+    mc.install.install_minecraft_version(version, str(runtime))
+    java = mc.runtime.get_executable_path("java-runtime-gamma", str(runtime))
+    if not java:
+        raise RuntimeError("No se pudo preparar Java 17 para Minecraft.")
+    forge = version + "-" + config["forge"]
     version = mc.forge.forge_to_installed_version(forge)
     if not (runtime / "versions" / version / (version + ".json")).is_file():
-        runtime.mkdir(exist_ok=True)
         mc.forge.install_forge_version(forge, str(runtime), java=java)
     if config.get("local"):
         name = config["nombre"]
@@ -283,6 +295,8 @@ $form.Add_Shown({
 $watcher.EnableRaisingEvents = $true
 try { [void]$form.ShowDialog() } finally { $watcher.Dispose() }
 $form.Dispose()
+
+
 
 
 
