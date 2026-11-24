@@ -1,0 +1,14 @@
+{
+    "slot":  "helmet",
+    "armor_tag":  "minecraft:netherite_helmet",
+    "overlay_texture":  "jag_default_armor:textures/misc/blank.png",
+    "has_vignette":  false,
+    "block_vanila_projectile":  false,
+    "camera_shake_multiplier":  1.0,
+    "ammo_immunity":  0.0,
+    "back_ammo_immunity":  0.0,
+    "damage_reduction_cap":  0.0,
+    "speed_modify":  0.0,
+    "jump_modify":  0.0,
+    "plate_slot":  false
+}

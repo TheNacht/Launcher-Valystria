@@ -1,0 +1,55 @@
+{
+  "filter": "tacz:default",
+  "tabs": [
+    {
+      "id": "jagtaczarmor:helmet",
+      "name": "jagtaczarmor.type.helmet.name",
+      "icon": {
+        "item": "jagtaczarmor:tk_hm",
+        "nbt": {
+          "armor_id": "jag_default_armor:juggernaut_helmet"
+        }
+      }
+    },
+    {
+      "id": "jagtaczarmor:chestplate",
+      "name": "jagtaczarmor.type.chestplate.name",
+      "icon": {
+        "item": "jagtaczarmor:tk_ch",
+        "nbt": {
+          "armor_id": "jag_default_armor:juggernaut_chestplate"
+        }
+      }
+    },
+    {
+      "id": "jagtaczarmor:leggings",
+      "name": "jagtaczarmor.type.leggings.name",
+      "icon": {
+        "item": "jagtaczarmor:tk_lg",
+        "nbt": {
+          "armor_id": "jag_default_armor:juggernaut_leggings"
+        }
+      }
+    },
+    {
+      "id": "jagtaczarmor:boots",
+      "name": "jagtaczarmor.type.boots.name",
+      "icon": {
+        "item": "jagtaczarmor:tk_bt",
+        "nbt": {
+          "armor_id": "jag_default_armor:juggernaut_boots"
+        }
+      }
+    },
+    {
+      "id": "jagtaczarmor:plate",
+      "name": "jagtaczarmor.type.plate.name",
+      "icon": {
+        "item": "jagtaczarmor:plate_armor",
+        "nbt": {
+          "plate_id": "jag_default_armor:ceramic_plate"
+        }
+      }
+    }
+  ]
+}

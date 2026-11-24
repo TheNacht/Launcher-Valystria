@@ -1,0 +1,15 @@
+[22:24:28] [INIT] KubeJS 2001.6.5-build.26; MC 2001 forge
+[22:24:28] [INIT] Loaded plugins:
+[22:24:28] [INIT] - dev.latvian.mods.kubejs.forge.BuiltinKubeJSForgePlugin
+[22:24:28] [INIT] - dev.latvian.mods.kubejs.forge.BuiltinKubeJSForgeClientPlugin
+[22:24:28] [INIT] - com.tacz.guns.compat.kubejs.TimelessKubeJSPlugin
+[22:24:28] [INIT] - pie.ilikepiefoo.AdditionsPlugin
+[22:24:28] [INIT] - pie.ilikepiefoo.compat.jei.JEIKubeJSPlugin
+[22:24:28] [INIT] - dev.aika.taczjs.forge.TaCZJSPlugin
+[22:24:28] [INIT] - maxkuka.kubejsrarity.kubejs.CustomRarityKubeJSPlugin
+[22:24:28] [INIT] - com.vomiter.kubejseasynpc.EasyNPCPlugin
+[22:24:28] [INFO] example.js#5: Hello, World! (Loaded server scripts)
+[22:24:28] [INFO] Loaded script server_scripts:example.js in 0.001 s
+[22:24:28] [INFO] Loaded 1/1 KubeJS server scripts in 0.005 s with 0 errors and 0 warnings
+[22:24:28] [INFO] Scripts loaded
+[22:24:29] [INFO] Server resource reload complete!

@@ -1,0 +1,11 @@
+{
+  "publicAnnounce": true,
+  "autoBanOnViolation": false,
+  "excludeFromLog": [],
+  "detectDroppedItems": true,
+  "detectWorldBlocks": true,
+  "webEnabled": true,
+  "webPort": 25580,
+  "webBind": "127.0.0.1",
+  "webAccounts": []
+}

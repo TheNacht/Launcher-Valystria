@@ -1,0 +1,8 @@
+{
+  "name": "jag_default_armor.block.armor_crafting_station.name",
+  "display": "jag_default_armor:armor_crafting_station",
+  "data": "jag_default_armor:armor_crafting_station",
+  "tooltip": "jag_default_armor.block.armor_crafting_station.desc",
+  "id": "tacz:workbench_c",
+  "sort": 199
+}

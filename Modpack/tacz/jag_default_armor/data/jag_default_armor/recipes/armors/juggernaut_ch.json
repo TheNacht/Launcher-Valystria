@@ -1,0 +1,51 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:netherite_chestplate"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:netherite_scrap"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 16
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 8
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 16
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_ch",
+            "nbt": {
+                "armor_id": "jag_default_armor:juggernaut_chestplate"
+            }
+        },
+        "group": "jagtaczarmor:chestplate"
+    }
+}

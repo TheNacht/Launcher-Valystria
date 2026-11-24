@@ -1,0 +1,14 @@
+{
+  "name": "Steel Plate",
+  "defense": 1,
+  "toughness": 0,
+  "item_texture": "jag_default_armor:textures/item/steel_plate.png",
+  "block_vanila_projectile": true,
+  "speed_modify": -0.05,
+  "jump_modify": 0.0,
+  "camera_shake_multiplier": 1.0,
+  "durability": 40,
+  "ammo_immunity": 0.3,
+  "knockback_resistance": 0.5,
+  "damage_reduction_cap": 0.3
+}

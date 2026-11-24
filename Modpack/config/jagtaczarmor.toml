@@ -1,0 +1,42 @@
+#--- Armor Impact Camera Effects (When armor is hit) ---
+impact_tilt_multiplier = 1.0
+impact_tilt_duration = 12
+impact_tilt_frequency = 1.0
+impact_tilt_decay_exponent = 1.2
+#
+#--- Armor Penetrant Camera Effects (When armor is hit AND penetrated) ---
+penetrant_tilt_multiplier = 1.0
+penetrant_tilt_duration = 8
+penetrant_tilt_frequency = 1.5
+penetrant_tilt_decay_exponent = 1.8
+#
+#--- No Armor Hurt Camera Effects (When hit without armor at location) ---
+hurt_tilt_multiplier = 1.6
+hurt_tilt_duration = 6
+hurt_tilt_frequency = 2.0
+hurt_tilt_decay_exponent = 1.8
+#
+#When true, custom camera shake plays even when the hit location has no armor.
+#When false, vanilla tilt is used instead if no armor is at the hit location.
+enable_no_armor_hit_shaking = true
+#
+#Toggle settings for visuals and audio
+enable_impact_shaking = true
+enable_penetrant_shaking = true
+enable_impact_sound = true
+enable_hurt_sound = true
+enable_vignette = true
+enable_blood_particles = false
+vignette_intensity = 1.0
+vignette_duration = 10
+#
+#If true, the mod will overwrite the jag_default_armor pack every time the game runs.
+#If false, it will keep any modifications made to that pack.
+overwrite_default_pack = true
+#
+#Default camera_shake_multiplier per slot.
+default_shake_helmet = 1.2
+default_shake_chestplate = 1.0
+default_shake_leggings = 0.8
+default_shake_boots = 0.6
+

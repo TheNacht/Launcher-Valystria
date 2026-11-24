@@ -1,0 +1,14 @@
+{
+  "name": "UHMWPE Plate",
+  "defense": 2,
+  "toughness": 1,
+  "item_texture": "jag_default_armor:textures/item/uhmwpe_plate.png",
+  "block_vanila_projectile": false,
+  "speed_modify": 0.0,
+  "jump_modify": 0.0,
+  "camera_shake_multiplier": 1.0,
+  "durability": 12,
+  "ammo_immunity": 0.45,
+  "knockback_resistance": 0.8,
+  "damage_reduction_cap": 0.9
+}

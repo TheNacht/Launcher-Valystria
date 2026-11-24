@@ -1,0 +1,33 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:coal"
+            },
+            "count": 12
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_block"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 4
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:plate_armor",
+            "nbt": {
+                "plate_id": "jag_default_armor:steel_plate"
+            }
+        },
+        "group": "jagtaczarmor:plate"
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:iron_helmet"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 6
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_hm",
+            "nbt": {
+                "armor_id": "jag_default_armor:arditi_helmet"
+            }
+        },
+        "group": "jagtaczarmor:helmet"
+    }
+}

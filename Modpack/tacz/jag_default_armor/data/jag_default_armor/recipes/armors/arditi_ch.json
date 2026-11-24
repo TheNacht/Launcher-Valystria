@@ -1,0 +1,45 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:iron_chestplate"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 12
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 16
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_ch",
+            "nbt": {
+                "armor_id": "jag_default_armor:arditi_chestplate"
+            }
+        },
+        "group": "jagtaczarmor:chestplate"
+    }
+}

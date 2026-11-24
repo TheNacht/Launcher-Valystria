@@ -1,0 +1,51 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:netherite_boots"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:netherite_scrap"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 8
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_bt",
+            "nbt": {
+                "armor_id": "jag_default_armor:juggernaut_boots"
+            }
+        },
+        "group": "jagtaczarmor:boots"
+    }
+}

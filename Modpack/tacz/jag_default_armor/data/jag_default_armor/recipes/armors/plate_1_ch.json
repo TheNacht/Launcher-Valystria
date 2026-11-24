@@ -1,0 +1,33 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:leather_chestplate"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 4
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_ch",
+            "nbt": {
+                "armor_id": "jag_default_armor:plate_1_chestplate"
+            }
+        },
+        "group": "jagtaczarmor:chestplate"
+    }
+}

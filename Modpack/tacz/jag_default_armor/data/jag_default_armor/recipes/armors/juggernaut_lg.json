@@ -1,0 +1,51 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:netherite_leggings"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:netherite_scrap"
+            },
+            "count": 2
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 2
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 6
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 10
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_lg",
+            "nbt": {
+                "armor_id": "jag_default_armor:juggernaut_leggings"
+            }
+        },
+        "group": "jagtaczarmor:leggings"
+    }
+}

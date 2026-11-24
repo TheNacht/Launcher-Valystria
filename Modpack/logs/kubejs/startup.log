@@ -1,0 +1,13 @@
+[21:50:38] [INIT] KubeJS 2001.6.5-build.26; MC 2001 forge
+[21:50:38] [INIT] Loaded plugins:
+[21:50:38] [INIT] - dev.latvian.mods.kubejs.forge.BuiltinKubeJSForgePlugin
+[21:50:38] [INIT] - dev.latvian.mods.kubejs.forge.BuiltinKubeJSForgeClientPlugin
+[21:50:38] [INIT] - com.tacz.guns.compat.kubejs.TimelessKubeJSPlugin
+[21:50:38] [INIT] - pie.ilikepiefoo.AdditionsPlugin
+[21:50:38] [INIT] - pie.ilikepiefoo.compat.jei.JEIKubeJSPlugin
+[21:50:38] [INIT] - dev.aika.taczjs.forge.TaCZJSPlugin
+[21:50:38] [INIT] - maxkuka.kubejsrarity.kubejs.CustomRarityKubeJSPlugin
+[21:50:38] [INIT] - com.vomiter.kubejseasynpc.EasyNPCPlugin
+[21:50:39] [INFO] example.js#5: Hello, World! (Loaded startup scripts)
+[21:50:39] [INFO] Loaded script startup_scripts:example.js in 0.1 s
+[21:50:39] [INFO] Loaded 1/1 KubeJS startup scripts in 0.827 s with 0 errors and 0 warnings

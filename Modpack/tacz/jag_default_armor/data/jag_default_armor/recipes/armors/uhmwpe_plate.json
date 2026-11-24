@@ -1,0 +1,33 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:quartz"
+            },
+            "count": 12
+        },
+        {
+            "item": {
+                "item": "minecraft:slime_ball"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:string"
+            },
+            "count": 4
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:plate_armor",
+            "nbt": {
+                "plate_id": "jag_default_armor:uhmwpe_plate"
+            }
+        },
+        "group": "jagtaczarmor:plate"
+    }
+}

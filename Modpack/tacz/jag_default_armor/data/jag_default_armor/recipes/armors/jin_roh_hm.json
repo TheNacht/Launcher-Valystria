@@ -1,0 +1,45 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:diamond_helmet"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 3
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 8
+        },
+        {
+            "item": {
+                "item": "minecraft:fire_charge"
+            },
+            "count": 2
+        },
+        {
+            "item": {
+                "tag": "forge:glass"
+            },
+            "count": 1
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_hm",
+            "nbt": {
+                "armor_id": "jag_default_armor:jin_roh_helmet"
+            }
+        },
+        "group": "jagtaczarmor:helmet"
+    }
+}

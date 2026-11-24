@@ -1,0 +1,9 @@
+#Biome ids disabled for newly generated chunks. Example: ["minecraft:desert", "biomesoplenty:lavender_field"]
+disabledBiomes = ["minecraft:basalt_deltas", "minecraft:crimson_forest", "minecraft:end_barrens", "minecraft:end_highlands", "minecraft:end_midlands", "minecraft:nether_wastes", "minecraft:small_end_islands", "minecraft:soul_sand_valley", "minecraft:the_end", "minecraft:warped_forest", "phayriosisreborn:blooming_grove", "phayriosisreborn:primordial_hellscape", "phayriosisreborn:rotting_forest", "zombie_extreme:scorched_earth"]
+#Legacy single fallback biome id used by older configs when fallbackBiomes is not present.
+fallbackBiome = "minecraft:plains"
+#Fallback biome candidates for disabled biomes. Use ["default:all_enabled"] to reselect from the active biome source.
+fallbackBiomes = ["default:all_enabled"]
+#Direct biome replacements that win before fallback selection. Format: ["minecraft:forest=minecraft:plains"].
+replacementBiomes = []
+

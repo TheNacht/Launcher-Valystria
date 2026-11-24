@@ -1,0 +1,20 @@
+{
+    "name": "Light Plate Carrier",
+    "slot": "chestplate",
+    "defense": 4,
+    "toughness": 0,
+    "geo_model": "jag_default_armor:geo/armors/plate_1_geo.json",
+    "texture": "jag_default_armor:textures/uv/plate_1.png",
+    "item_texture": "jag_default_armor:textures/item/plate_1",
+    "block_vanila_projectile": false,
+    "speed_modify": 0.0,
+    "jump_modify": 0.0,
+    "camera_shake_multiplier": 1.0,
+    "durability_multiplier": 33,
+    "ammo_immunity": 0.0,
+    "back_ammo_immunity": 0.0,
+    "knockback_resistance": 0.0,
+    "damage_reduction_cap": 0.1,
+    "repair_item": "minecraft:leather",
+    "plate_slot": true
+}

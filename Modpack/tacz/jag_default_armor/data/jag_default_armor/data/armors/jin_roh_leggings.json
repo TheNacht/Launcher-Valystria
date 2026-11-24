@@ -1,0 +1,20 @@
+{
+    "name":  "Kerberos Panzer Cops Leggings",
+    "slot":  "leggings",
+    "defense":  7,
+    "toughness":  2,
+    "geo_model":  "jag_default_armor:geo/armors/jr_lg_geo.json",
+    "texture":  "jag_default_armor:textures/uv/jr_lg.png",
+    "item_texture":  "jag_default_armor:textures/item/jr_lg",
+    "block_vanila_projectile":  true,
+    "speed_modify":  0.0,
+    "jump_modify":  0.0,
+    "camera_shake_multiplier":  1.0,
+    "durability_multiplier":  45,
+    "ammo_immunity":  0.25,
+    "back_ammo_immunity":  0.2,
+    "knockback_resistance":  0.2,
+    "damage_reduction_cap":  0.9,
+    "repair_item":  "minecraft:diamond",
+    "plate_slot":  false
+}

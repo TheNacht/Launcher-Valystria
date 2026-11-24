@@ -1,0 +1,20 @@
+{
+    "name":  "Farina Chestplate",
+    "slot":  "chestplate",
+    "defense":  6,
+    "toughness":  1,
+    "geo_model":  "jag_default_armor:geo/armors/at_ch_geo.json",
+    "texture":  "jag_default_armor:textures/uv/at_ch.png",
+    "item_texture":  "jag_default_armor:textures/item/at_ch",
+    "block_vanila_projectile":  true,
+    "speed_modify":  -0.05,
+    "jump_modify":  -0.05,
+    "camera_shake_multiplier":  1.0,
+    "durability_multiplier":  33,
+    "ammo_immunity":  0.4,
+    "back_ammo_immunity":  0.0,
+    "knockback_resistance":  0.1,
+    "damage_reduction_cap":  0.4,
+    "repair_item":  "minecraft:iron_ingot",
+    "plate_slot":  false
+}

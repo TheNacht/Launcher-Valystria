@@ -1,0 +1,22 @@
+{
+    "name":  "Farina Helmet",
+    "slot":  "helmet",
+    "defense":  2,
+    "toughness":  1,
+    "geo_model":  "jag_default_armor:geo/armors/at_hm_geo.json",
+    "texture":  "jag_default_armor:textures/uv/at_hm.png",
+    "item_texture":  "jag_default_armor:textures/item/at_hm",
+    "overlay_texture":  "jag_default_armor:textures/misc/at_mask.png",
+    "has_vignette":  true,
+    "block_vanila_projectile":  true,
+    "camera_shake_multiplier":  1.0,
+    "speed_modify":  -0.025,
+    "jump_modify":  0.0,
+    "durability_multiplier":  33,
+    "ammo_immunity":  0.35,
+    "back_ammo_immunity":  0.15,
+    "knockback_resistance":  0.1,
+    "damage_reduction_cap":  0.4,
+    "repair_item":  "minecraft:iron_ingot",
+    "plate_slot":  false
+}

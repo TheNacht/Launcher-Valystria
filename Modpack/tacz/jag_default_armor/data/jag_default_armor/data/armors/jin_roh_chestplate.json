@@ -1,0 +1,20 @@
+{
+    "name":  "Kerberos Panzer Cops Chestplate",
+    "slot":  "chestplate",
+    "defense":  9,
+    "toughness":  2,
+    "geo_model":  "jag_default_armor:geo/armors/jr_ch_geo.json",
+    "texture":  "jag_default_armor:textures/uv/jr_ch.png",
+    "item_texture":  "jag_default_armor:textures/item/jr_ch",
+    "block_vanila_projectile":  true,
+    "speed_modify":  0.0,
+    "jump_modify":  0.0,
+    "camera_shake_multiplier":  1.0,
+    "durability_multiplier":  45,
+    "ammo_immunity":  0.3,
+    "back_ammo_immunity":  0.25,
+    "knockback_resistance":  0.2,
+    "damage_reduction_cap":  0.9,
+    "repair_item":  "minecraft:diamond",
+    "plate_slot":  false
+}

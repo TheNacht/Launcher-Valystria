@@ -1,0 +1,65 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.tk_lg",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "armorRightLeg",
+					"pivot": [-1.9, 12, 0]
+				},
+				{
+					"name": "leggings_right",
+					"parent": "armorRightLeg",
+					"pivot": [-1.9, 12, 0],
+					"binding": "'rightleg'",
+					"cubes": [
+						{
+							"origin": [-4.375, 0.005, -2.475],
+							"size": [4.95, 13.01, 4.95],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [5, 13]},
+								"east": {"uv": [5, 0], "uv_size": [5, 13]},
+								"south": {"uv": [10, 0], "uv_size": [5, 13]},
+								"west": {"uv": [0, 13], "uv_size": [5, 13]},
+								"up": {"uv": [20, 0], "uv_size": [5, 5]},
+								"down": {"uv": [20, 10], "uv_size": [5, -5]}
+							}
+						}
+					]
+				},
+				{
+					"name": "armorLeftLeg",
+					"pivot": [1.9, 12, 0]
+				},
+				{
+					"name": "leggings_left",
+					"parent": "armorLeftLeg",
+					"pivot": [1.9, 12, 0],
+					"binding": "'leftleg'",
+					"cubes": [
+						{
+							"origin": [-0.575, 0.005, -2.475],
+							"size": [4.95, 13.01, 4.95],
+							"uv": {
+								"north": {"uv": [5, 13], "uv_size": [5, 13]},
+								"east": {"uv": [10, 13], "uv_size": [5, 13]},
+								"south": {"uv": [15, 0], "uv_size": [5, 13]},
+								"west": {"uv": [15, 13], "uv_size": [5, 13]},
+								"up": {"uv": [20, 10], "uv_size": [5, 5]},
+								"down": {"uv": [20, 20], "uv_size": [5, -5]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

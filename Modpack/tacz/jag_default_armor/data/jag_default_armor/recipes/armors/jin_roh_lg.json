@@ -1,0 +1,45 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:diamond_leggings"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 2
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 2
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 6
+        },
+        {
+            "item": {
+                "item": "minecraft:fire_charge"
+            },
+            "count": 2
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_lg",
+            "nbt": {
+                "armor_id": "jag_default_armor:jin_roh_leggings"
+            }
+        },
+        "group": "jagtaczarmor:leggings"
+    }
+}

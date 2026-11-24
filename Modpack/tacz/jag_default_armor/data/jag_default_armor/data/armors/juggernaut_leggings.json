@@ -1,0 +1,20 @@
+{
+    "name":  "Al-Qatala Juggernaut Leggings",
+    "slot":  "leggings",
+    "defense":  8,
+    "toughness":  3,
+    "geo_model":  "jag_default_armor:geo/armors/tk_lg_geo.json",
+    "texture":  "jag_default_armor:textures/uv/tk_lg.png",
+    "item_texture":  "jag_default_armor:textures/item/tk_lg",
+    "block_vanila_projectile":  true,
+    "speed_modify":  -0.10,
+    "jump_modify":  -0.05,
+    "camera_shake_multiplier":  1.0,
+    "durability_multiplier":  55,
+    "ammo_immunity":  0.5,
+    "back_ammo_immunity":  0.3,
+    "knockback_resistance":  0.2,
+    "damage_reduction_cap":  0.75,
+    "repair_item":  "minecraft:netherite_scrap",
+    "plate_slot":  false
+}

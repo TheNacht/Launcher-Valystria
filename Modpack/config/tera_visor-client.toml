@@ -1,0 +1,20 @@
+
+[T]
+
+	[T.E]
+
+		[T.E.R]
+
+			[T.E.R."A - Visor Settings"]
+				#Exibe o corpo e os bracos 3D em primeira pessoa (desative se usar outro mod de corpo em 1a pessoa).
+				showFirstPersonBody = true
+				#Bloqueia a tela de Debug (F3) no modo Sobrevivencia/Aventura para forcar o uso da bussola e coordenadas do visor.
+				disableDebugScreen = true
+				#Faz a hotbar deslizar para fora da tela quando nao estiver trocando de item.
+				retractableHotbar = true
+				#Tempo em ticks (20 ticks = 1 segundo) que a hotbar permanece visivel apos trocar de slot.
+				#Range: 10 ~ 200
+				hotbarDisplayTicks = 40
+				#Toca o som de batimento cardiaco quando a vida do jogador estiver baixa.
+				lowHealthHeartbeat = true
+

@@ -1,0 +1,14 @@
+{
+  "name": "Ceramic Plate",
+  "defense": 3,
+  "toughness": 2,
+  "item_texture": "jag_default_armor:textures/item/ceramic_plate.png",
+  "block_vanila_projectile": true,
+  "speed_modify": -0.02,
+  "jump_modify": 0.0,
+  "camera_shake_multiplier": 1.0,
+  "durability": 3,
+  "ammo_immunity": 0.6,
+  "knockback_resistance": 0.75,
+  "damage_reduction_cap": 0.6
+}

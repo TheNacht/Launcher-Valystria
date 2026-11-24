@@ -1,0 +1,39 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:netherite_helmet"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:netherite_scrap"
+            },
+            "count": 3
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 3
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 18
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_hm",
+            "nbt": {
+                "armor_id": "jag_default_armor:juggernaut_helmet"
+            }
+        },
+        "group": "jagtaczarmor:helmet"
+    }
+}

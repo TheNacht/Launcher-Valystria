@@ -1,0 +1,45 @@
+{
+    "type": "tacz:gun_smith_table_crafting",
+    "materials": [
+        {
+            "item": {
+                "item": "minecraft:diamond_boots"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:diamond"
+            },
+            "count": 1
+        },
+        {
+            "item": {
+                "item": "minecraft:iron_ingot"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:leather"
+            },
+            "count": 4
+        },
+        {
+            "item": {
+                "item": "minecraft:fire_charge"
+            },
+            "count": 2
+        }
+    ],
+    "result": {
+        "type": "custom",
+        "item": {
+            "item": "jagtaczarmor:tk_bt",
+            "nbt": {
+                "armor_id": "jag_default_armor:jin_roh_boots"
+            }
+        },
+        "group": "jagtaczarmor:boots"
+    }
+}
