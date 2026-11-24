@@ -22,7 +22,8 @@ try {
         } else { throw 'El origen debe ser una URL HTTPS directa o una ruta absoluta.' }
         $errorsFound = $null
         $ast = [Management.Automation.Language.Parser]::ParseFile($temporary,[ref]$null,[ref]$errorsFound)
-        if ($errorsFound.Count -or !$ast.EndBlock.Statements.Count -or $ast.Extent.Text.TrimStart().StartsWith('<')) {
+        $packSync = $ast.Find({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Sync-Pack'}, $true)
+        if (!$packSync -or $errorsFound.Count -or !$ast.EndBlock.Statements.Count -or $ast.Extent.Text.TrimStart().StartsWith('<')) {
             throw 'El archivo recibido no es un launcher valido.'
         }
         if ((Get-FileHash -LiteralPath $temporary).Hash -ne (Get-FileHash -LiteralPath $launcher).Hash) {
@@ -38,4 +39,5 @@ try {
 }
 $env:VALYSTRIA_LAUNCHER_DIR = $PSScriptRoot
 & $launcher
+
 

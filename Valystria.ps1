@@ -12,7 +12,7 @@ if (Test-Path $settingsFile) {
     $saved = Get-Content $settingsFile -Raw | ConvertFrom-Json
     foreach ($key in @($config.Keys)) { $config[$key] = $saved.$key }
 }
-$config.carpeta = Join-Path $LauncherDirectory 'Modpack'
+$config.carpeta = Join-Path $settingsDir 'Modpack'
 [void][IO.Directory]::CreateDirectory((Join-Path $config.carpeta 'mods'))
 $form = New-Object Windows.Forms.Form
 $form.Text = 'Valystria Outbreak'
@@ -52,6 +52,76 @@ if (Test-Path -LiteralPath $logoPath -PathType Leaf) {
     $null = Add-Label 'Valystria Outbreak' 36 31 65
 }
 $null = Add-Label 'MINECRAFT JAVA   /   FORGE 1.20.1' 118 10 25
+function Get-PackFile($relative) {
+    if ($relative -notmatch '^(mods|config|defaultconfigs|resourcepacks|shaderpacks|kubejs|scripts|global_packs)/' -or
+        $relative -match '[\\:*?"<>|\x00-\x1f]' -or ($relative.Split('/') | Where-Object { !$_ -or $_ -match '[ .]$|^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\.|$)' })) {
+        throw "Ruta de pack no valida: $relative"
+    }
+    $file = Join-Path $config.carpeta $relative
+    $item = $file
+    while ($item -ne $settingsDir) {
+        if ((Test-Path -LiteralPath $item) -and ((Get-Item -Force -LiteralPath $item).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw "Enlace local no permitido: $relative" }
+        $item = Split-Path -Parent $item
+    }
+    return $file
+}
+function Get-BlobHash($file) {
+    $stream = [IO.File]::OpenRead($file)
+    $hash = [Security.Cryptography.SHA1]::Create()
+    try {
+        $prefix = [Text.Encoding]::ASCII.GetBytes("blob $($stream.Length)`0")
+        [void]$hash.TransformBlock($prefix,0,$prefix.Length,$prefix,0)
+        $buffer = New-Object byte[] 65536
+        while (($read = $stream.Read($buffer,0,$buffer.Length)) -gt 0) { [void]$hash.TransformBlock($buffer,0,$read,$buffer,0) }
+        [void]$hash.TransformFinalBlock($buffer,0,0)
+        return [BitConverter]::ToString($hash.Hash).Replace('-','').ToLowerInvariant()
+    } finally { $hash.Dispose(); $stream.Dispose() }
+}
+function Sync-Pack {
+    $status.Text = 'Comprobando el modpack en GitHub...'
+    $form.Refresh()
+    $api = 'https://api.github.com/repos/TheNacht/Launcher-Valystria'
+    try {
+        $commit = (Invoke-RestMethod "$api/commits/main" -TimeoutSec 20).sha
+    } catch {
+        if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) {
+            throw 'Pack no disponible. Comprueba que TheNacht/Launcher-Valystria sea publico y tenga la rama main.'
+        }
+        throw
+    }
+    if ($commit -notmatch '^[a-f0-9]{40}$') { throw 'Respuesta de GitHub no valida.' }
+    $tree = Invoke-RestMethod "$api/git/trees/${commit}?recursive=1" -TimeoutSec 30
+    if ($tree.truncated -or !$tree.tree) { throw 'GitHub devolvio una lista incompleta.' }
+    $files = @($tree.tree | Where-Object { $_.mode -in '100644','100755' -and $_.path -match '^Modpack/(mods|config|defaultconfigs|resourcepacks|shaderpacks|kubejs|scripts|global_packs)/' -and $_.path -notlike '*/.gitkeep' })
+    if (!($files | Where-Object path -like 'Modpack/mods/*.jar')) { throw 'Todavia no hay mods publicados en GitHub.' }
+    $ledger = Join-Path $settingsDir 'archivos-pack.json'
+    $old = @()
+    if (Test-Path $ledger) { $old = @((Get-Content $ledger -Raw | ConvertFrom-Json).files) }
+    $current = @{}
+    foreach ($entry in $files) {
+        $name = $entry.path.Substring(8)
+        $file = Get-PackFile $name
+        $current.Add($name,$true)
+        if ([IO.File]::Exists($file) -and (Get-BlobHash $file) -eq $entry.sha) { continue }
+        $status.Text = "Descargando $name"
+        $form.Refresh()
+        [void][IO.Directory]::CreateDirectory((Split-Path $file))
+        $tmp = Join-Path $settingsDir ([guid]::NewGuid().ToString())
+        try {
+            $urlPath = ($entry.path.Split('/') | ForEach-Object { [uri]::EscapeDataString($_) }) -join '/'
+            Invoke-WebRequest "https://raw.githubusercontent.com/TheNacht/Launcher-Valystria/$commit/$urlPath" -OutFile $tmp -UseBasicParsing -TimeoutSec 180
+            if ((Get-BlobHash $tmp) -ne $entry.sha) { throw "Descarga incompleta: $name" }
+            [IO.File]::Copy($tmp,$file,$true)
+        } finally { if ([IO.File]::Exists($tmp)) { [IO.File]::Delete($tmp) } }
+    }
+    foreach ($name in $old) {
+        if ($name -and !$current.ContainsKey($name)) { [IO.File]::Delete((Get-PackFile $name)) }
+    }
+    $journal = $ledger + '.new'
+    @{files=@($current.Keys)} | ConvertTo-Json | Set-Content $journal -Encoding UTF8
+    if ([IO.File]::Exists($ledger)) { [IO.File]::Replace($journal,$ledger,($ledger+'.bak')) } else { [IO.File]::Move($journal,$ledger) }
+    $status.Text = Get-PackStatus
+}
 function Get-PackStatus {
     $mods = @(Get-ChildItem -LiteralPath (Join-Path $config.carpeta 'mods') -File -Filter '*.jar' -ErrorAction SilentlyContinue)
     if (!$mods.Count) { return 'Coloca los archivos .jar del pack en Modpack\mods.' }
@@ -75,6 +145,7 @@ $offline.Add_CheckedChanged({ $nameBox.Enabled = $offline.Checked; if ($offline.
 $play = Add-Button 'JUGAR' 32 298 496 {
     $play.Enabled = $false
     try {
+        if (!$script:packReady) { Sync-Pack; $script:packReady = $true }
         if (!(Get-ChildItem -LiteralPath (Join-Path $config.carpeta 'mods') -File -Filter '*.jar' -ErrorAction SilentlyContinue | Select-Object -First 1)) { throw (Get-PackStatus) }
         if (!$config.forge) {
             $version = [Microsoft.VisualBasic.Interaction]::InputBox('Version exacta de Forge de tu pack (47.x.x)', 'Valystria Outbreak')
@@ -206,9 +277,14 @@ $watcher.add_Created($onChange)
 $watcher.add_Changed($onChange)
 $watcher.add_Deleted($onChange)
 $watcher.add_Renamed($onChange)
+$form.Add_Shown({
+    try { Sync-Pack; $script:packReady = $true } catch { $status.Text = $_.Exception.Message }
+})
 $watcher.EnableRaisingEvents = $true
 try { [void]$form.ShowDialog() } finally { $watcher.Dispose() }
 $form.Dispose()
+
+
 
 
 
