@@ -54,7 +54,7 @@ $temporary = $null
 try {
     $source = (Get-Content -LiteralPath $settings -Raw | ConvertFrom-Json).origen
     if ($source) {
-        $cache = Join-Path $env:LOCALAPPDATA 'ValystriaOutbreak\actualizaciones/v9'
+        $cache = Join-Path $env:LOCALAPPDATA 'ValystriaOutbreak\actualizaciones/v15'
         $sha = [Security.Cryptography.SHA256]::Create()
         try {
             $key = [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($source))).Replace('-','')
@@ -72,7 +72,7 @@ try {
         $errorsFound = $null
         $ast = [Management.Automation.Language.Parser]::ParseFile($temporary,[ref]$null,[ref]$errorsFound)
         $packSync = $ast.Find({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Sync-Pack'}, $true)
-        if (!$ast.Extent.Text.Contains('# Interfaz Valystria 9') -or !$packSync -or $errorsFound.Count -or !$ast.EndBlock.Statements.Count -or $ast.Extent.Text.TrimStart().StartsWith('<')) {
+        if (!$ast.Extent.Text.Contains('# Interfaz Valystria 15') -or !$packSync -or $errorsFound.Count -or !$ast.EndBlock.Statements.Count -or $ast.Extent.Text.TrimStart().StartsWith('<')) {
             throw 'El archivo recibido no es un launcher valido.'
         }
         if ((Get-FileHash -LiteralPath $temporary).Hash -ne (Get-FileHash -LiteralPath $launcher).Hash) {

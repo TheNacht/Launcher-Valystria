@@ -1,5 +1,5 @@
 ﻿param([string]$LauncherDirectory = $(if ($env:VALYSTRIA_LAUNCHER_DIR) { $env:VALYSTRIA_LAUNCHER_DIR } else { $PSScriptRoot }))
-# Interfaz Valystria 9
+# Interfaz Valystria 15
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -57,13 +57,15 @@ function Add-Button($caption,$left,$top,$width,$handler) {
     return $button
 }
 
-$minimize = Add-Button '―' 842 10 40 { $form.WindowState = 'Minimized' }
-$close = Add-Button '×' 886 10 40 { $form.Close() }
+$minimize = Add-Button '―' 852 17 30 { $form.WindowState = 'Minimized' }
+$close = Add-Button '×' 891 17 30 { $form.Close() }
 foreach ($button in $minimize,$close) {
     $button.FlatAppearance.BorderSize = 0
     $button.BackColor = [Drawing.Color]::Transparent
-    $button.Font = New-Object Drawing.Font('Segoe UI',15)
+    $button.Font = New-Object Drawing.Font('Segoe UI',11)
 }
+$minimize.Height = $close.Height = 30
+$close.ForeColor = [Drawing.Color]::Salmon
 $minimize.AccessibleName = 'Minimizar'
 $close.AccessibleName = 'Cerrar'
 $form.Add_MouseDown({param($sender,$ev) if ($ev.Button -eq 'Left' -and $ev.Y -lt 78) { $script:dragStart = $ev.Location }})
@@ -85,22 +87,16 @@ $veil = New-Object Drawing.Drawing2D.LinearGradientBrush($bounds,[Drawing.Color]
 $gfx.FillRectangle($veil,$bounds)
 $veil.Dispose()
 # Frameless inset account card and the crimson accent lines are painted into the scene.
-$card = New-Object Drawing.Drawing2D.GraphicsPath
-$card.AddRectangle((New-Object Drawing.Rectangle(635,89,270,357)))
-$panelBrush = New-Object Drawing.SolidBrush([Drawing.Color]::FromArgb(115,25,12,20))
 $edge = New-Object Drawing.Pen([Drawing.Color]::FromArgb(95,211,136,147))
 $gfx.SmoothingMode = 'AntiAlias'
-$gfx.FillPath($panelBrush,$card)
-$gfx.DrawPath($edge,$card)
 $gfx.DrawLine($edge,36,77,901,77)
-$gfx.DrawLine($edge,658,164,881,164)
+$gfx.DrawLine($edge,36,77,901,77)
+$gfx.DrawLine($edge,619,164,900,164)
 $accent = New-Object Drawing.SolidBrush([Drawing.Color]::FromArgb(232,50,78))
 $gfx.FillRectangle($accent,38,286,39,4)
-$gfx.FillRectangle($accent,659,160,28,3)
+$gfx.FillRectangle($accent,620,160,28,3)
 $accent.Dispose()
 $edge.Dispose()
-$panelBrush.Dispose()
-$card.Dispose()
 $gfx.Dispose()
 $scene.Dispose()
 $form.BackgroundImage = $canvas
@@ -112,7 +108,7 @@ $brand.Image = [Drawing.Image]::FromFile((Join-Path $LauncherDirectory 'logo-out
 $form.Controls.Add($brand)
 $network = Add-Label 'VALYSTRIA' 22 15 30
 $network.SetBounds(90,22,120,32)
-$network.Font = New-Object Drawing.Font('Segoe UI Semibold',15)
+$network.Font = New-Object Drawing.Font('Segoe UI Black',17)
 $heading = Add-Label 'OUTBREAK' 291 46 87
 $heading.Font = New-Object Drawing.Font('Segoe UI Black',48)
 $heading.ForeColor = [Drawing.ColorTranslator]::FromHtml('#ffdee1')
@@ -145,12 +141,12 @@ $ink.Dispose();$gold.Dispose();$glyphs.Dispose();$family.Dispose()
 $form.Controls.Add($titleArt)
 $network.Text=''
 $network.AccessibleName='Valystria'
-$network.Add_Paint({
+$paintWave = {
     param($sender,$ev)
     $path=New-Object Drawing.Drawing2D.GraphicsPath
-    $path.AddString('Valystria',$fonts.Families[0],0,24,[Drawing.PointF]::new(0,0),[Drawing.StringFormat]::GenericTypographic)
+    $path.AddString($sender.AccessibleName.ToUpperInvariant(),$sender.Font.FontFamily,0,([single]$sender.Tag),[Drawing.PointF]::new(0,0),[Drawing.StringFormat]::GenericTypographic)
     $phase = ($clock.Elapsed.TotalSeconds % 5.4)/5.4
-    $shift = [int](200*[Math]::Min(1,[Math]::Max(0,($phase-0.18)/0.52)))-122
+    $shift = [int](($sender.Width+122)*[Math]::Min(1,[Math]::Max(0,($phase-0.18)/0.52)))-122
     $rect = New-Object Drawing.Rectangle($shift,0,140,32)
     $brush=New-Object Drawing.Drawing2D.LinearGradientBrush($rect,[Drawing.Color]::Wheat,[Drawing.Color]::Coral,15.0)
     $blend=New-Object Drawing.Drawing2D.ColorBlend
@@ -159,7 +155,9 @@ $network.Add_Paint({
     $brush.InterpolationColors=$blend
     $ev.Graphics.SmoothingMode='AntiAlias';$ev.Graphics.FillPath($brush,$path)
     $brush.Dispose();$path.Dispose()
-})
+}
+$network.Tag=20
+$network.Add_Paint($paintWave)
 $meta = Add-Label 'MINECRAFT 1.20.1    /    FORGE 47.4.28' 376 10 26
 $meta.ForeColor = [Drawing.ColorTranslator]::FromHtml('#ffc1c8')
 function Get-PackFile($relative) {
@@ -235,78 +233,59 @@ function Sync-Pack {
 }
 function Get-PackStatus {
     $mods = @(Get-ChildItem -LiteralPath (Join-Path $config.carpeta 'mods') -File -Filter '*.jar' -ErrorAction SilentlyContinue)
-    if (!$mods.Count) { return 'Forge listo para jugar.' }
+    if (!$mods.Count) { return '' }
     return "Modpack listo: $($mods.Count) archivos .jar en mods."
 }
 $status = Add-Label (Get-PackStatus) 365 10 65
-$status.SetBounds(658,335,224,98)
+$status.SetBounds(619,361,281,103)
 $accountTitle = Add-Label 'Cuenta de jugador' 118 17 36
-$accountTitle.SetBounds(658,113,235,40)
-$account = New-Object Windows.Forms.Button
-$account.Font = New-Object Drawing.Font('Segoe UI Semibold',11)
-$account.FlatStyle = 'Flat'
-$account.FlatAppearance.BorderColor = [Drawing.ColorTranslator]::FromHtml('#a63851')
-$account.BackColor = [Drawing.ColorTranslator]::FromHtml('#40101c')
-$account.ForeColor = [Drawing.Color]::MistyRose
-$account.TextAlign = 'MiddleLeft'
-$account.Padding = New-Object Windows.Forms.Padding(12,0,0,0)
-$account.SetBounds(658,184,224,40)
-$account.FlatAppearance.BorderColor = [Drawing.ColorTranslator]::FromHtml('#af4a62')
-$account.FlatAppearance.MouseOverBackColor = [Drawing.ColorTranslator]::FromHtml('#662138')
-$account.Add_Paint({param($sender,$ev)
-    foreach ($offset in 0,5,10) { $ev.Graphics.FillEllipse([Drawing.Brushes]::LightPink,($sender.Width-23+$offset),18,2,2) }
-})
-$account.AccessibleName = 'Elegir cuenta de jugador'
-$choices = @('Premium · Microsoft','Sin cuenta · No premium')
-$account.Tag = [int][bool]$config.local
-$account.Text = $choices[$account.Tag]
-$form.Controls.Add($account)
-$menu = New-Object Windows.Forms.ContextMenuStrip
-Add-Type -ReferencedAssemblies System.Drawing,System.Windows.Forms -TypeDefinition @"
-using System.Drawing;
-using System.Windows.Forms;
-public sealed class OutbreakMenuRenderer : ToolStripProfessionalRenderer {
-    protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e) {
-        using (var brush = new SolidBrush(e.Item.Selected ? Color.FromArgb(142,20,48) : Color.FromArgb(60,12,26)))
-            e.Graphics.FillRectangle(brush, new Rectangle(Point.Empty,e.Item.Size));
-    }
-}
-"@
-$menu.Renderer = New-Object OutbreakMenuRenderer
-$menu.BackColor = $account.BackColor
-$menu.ShowImageMargin = $false
-$menu.Padding = New-Object Windows.Forms.Padding(4)
-$menu.ShowCheckMargin = $true
-foreach ($choice in $choices) {
-    $item = $menu.Items.Add($choice)
-    $item.BackColor = $account.BackColor
-    $item.ForeColor = $account.ForeColor
-    $item.Font = $account.Font
-    $item.AutoSize = $false; $item.Size = New-Object Drawing.Size(212,36)
-}
-$menu.Add_ItemClicked({
-    param($sender,$eventArgs)
-    $account.Tag = $sender.Items.IndexOf($eventArgs.ClickedItem)
-    $account.Text = $choices[$account.Tag]
-    Update-AccountFields
-})
-$account.Add_Click({ foreach ($option in $menu.Items) { $option.Checked = $option.Text -eq $account.Text }; $menu.Show($account,0,($account.Height+4)) })
+$accountTitle.SetBounds(619,111,303,45)
+$accountTitle.Font = New-Object Drawing.Font('Segoe UI Black',17)
+$accountTitle.Text = ''
+$accountTitle.Tag = 24
+$accountTitle.Add_Paint($paintWave)
+$accountTitle.ForeColor = [Drawing.Color]::LightSalmon
+$account = Add-Label 'Cuenta local · No premium' 188 12 32
+$account.SetBounds(619,184,281,40)
+$account.Font = New-Object Drawing.Font('Segoe UI Semibold',12)
 $nameLabel = Add-Label 'Nombre de jugador' 205 11 25
-$nameLabel.SetBounds(658,247,222,24)
+$nameLabel.SetBounds(619,237,281,25)
+$nameLabel.Font = New-Object Drawing.Font('Segoe UI Semibold',11)
+$nameLabel.ForeColor = [Drawing.Color]::MistyRose
+$nameFrame = New-Object Windows.Forms.Panel
+$nameFrame.SetBounds(619,266,281,40)
+$nameFrame.BackColor = [Drawing.ColorTranslator]::FromHtml('#32151e')
+$form.Controls.Add($nameFrame)
+$nameFrame.Add_Paint({param($sender,$ev)
+    $pen = if ($nameBox.Focused) {[Drawing.Pens]::LightCoral} else {[Drawing.Pens]::IndianRed}
+    $ev.Graphics.DrawLine($pen,0,37,223,37)
+})
 $nameBox = New-Object Windows.Forms.TextBox
-$nameBox.SetBounds(658,276,224,32)
+$nameBox.SetBounds(11,8,258,25)
 $nameBox.Font = $account.Font
-$nameBox.BorderStyle = 'FixedSingle'
-$nameBox.BackColor = $account.BackColor
+$nameBox.BorderStyle = 'None'
+$nameBox.BackColor = $nameFrame.BackColor
 $nameBox.ForeColor = $account.ForeColor
 $nameBox.AccessibleName = 'Nombre de jugador'
 $nameBox.MaxLength = 16
 $nameBox.Text = [string]$config.nombre
-$form.Controls.Add($nameBox)
+$nameFrame.Controls.Add($nameBox)
+$nameBox.Add_GotFocus({$nameFrame.Invalidate()})
+$nameBox.Add_LostFocus({$nameFrame.Invalidate()})
+$form.Add_FormClosing({
+    $config.nombre = $nameBox.Text
+    $config.local = $true
+    $tmp = Join-Path $settingsDir ([guid]::NewGuid().ToString()+'.json')
+    try {
+        $config | ConvertTo-Json | Set-Content -LiteralPath $tmp -Encoding UTF8 -ErrorAction Stop
+        if ([IO.File]::Exists($settingsFile)) { [IO.File]::Replace($tmp,$settingsFile,($settingsFile+'.bak')) }
+        else { [IO.File]::Move($tmp,$settingsFile) }
+    } finally { if ([IO.File]::Exists($tmp)) { [IO.File]::Delete($tmp) } }
+})
 Add-Type -Path (Join-Path $LauncherDirectory 'SkinPreview.cs') -ReferencedAssemblies System.Drawing,System.Windows.Forms,System.Web.Extensions,System.Core
 $avatar = New-Object SkinPreview
 $avatar.LoadDefault((Join-Path $LauncherDirectory 'default-player.png'))
-$avatar.SetBounds(719,310,102,132)
+$avatar.SetBounds(698,313,123,154)
 $avatar.BackColor = [Drawing.Color]::Transparent
 $avatar.SizeMode = 'Zoom'
 $form.Controls.Add($avatar)
@@ -315,35 +294,26 @@ $skinDelay.Interval = 650
 $skinDelay.Add_Tick({
     $skinDelay.Stop()
     $who = $nameBox.Text.Trim()
-    if ($account.Tag -eq 0) {
-        $profileFile = Join-Path $settingsDir 'perfil-premium.txt'
-        $who = if (Test-Path $profileFile) { [IO.File]::ReadAllText($profileFile) } else { '' }
-    }
     $avatar.Choose([string]$who)
 })
 $nameBox.Add_TextChanged({$skinDelay.Stop();$skinDelay.Start()})
-function Update-AccountFields {
-    $skinDelay.Stop();$skinDelay.Start()
-    $nameBox.Visible = $account.Tag -eq 1
-    $nameLabel.Visible = $account.Tag -eq 1
-}
-
-Update-AccountFields
-$notes = Add-Label "Interfaz del launcher`r`n`r`nGotas de sangre descendentes, panel translúcido y navegación entre cuenta y notas." 185 11 150
-$notes.SetBounds(658,184,223,160)
+$skinDelay.Start()
+$notes = Add-Label "Interfaz del launcher`r`n`r`nGotas de sangre descendentes, panel translúcido y navegación entre cuenta y notas." 185 12 150
+$notes.SetBounds(619,184,281,205)
 $notes.Visible = $false
-$homeInfo = Add-Label "Minecraft Java Edition`r`nMinecraft 1.20.1 · Forge 47.4.28`r`n`r`nPuedes elegir tu perfil en Cuenta y consultar los cambios en Notas de parche." 183 11 150
-$homeInfo.SetBounds(658,184,223,144)
+$homeInfo = Add-Label "Minecraft Java Edition`r`nMinecraft 1.20.1 · Forge 47.4.28`r`n`r`nPuedes cambiar tu nombre en Cuenta y consultar los cambios en Notas de parche." 183 13 155
+$homeInfo.SetBounds(619,184,281,171)
 function Select-LauncherTab([string]$page) {
     $isAccount = $page -eq 'Cuenta'
     $homeInfo.Visible = $page -eq 'Inicio'
-    $notes.Visible = $page -eq 'Notas de parche'
+        $notes.Visible = $page -eq 'Notas de parche'
     $status.Visible = $page -eq 'Inicio'
+
     $avatar.Visible = $isAccount
     $account.Visible = $isAccount
-    $accountTitle.Text = if ($isAccount) {'Cuenta de jugador'} else {$page}
-    $nameLabel.Visible = $isAccount -and $account.Tag -eq 1
-    $nameBox.Visible = $isAccount -and $account.Tag -eq 1
+    $accountTitle.AccessibleName = if ($isAccount) {'CUENTA DE JUGADOR'} else {$page.ToUpperInvariant()}
+    $nameLabel.Visible = $isAccount
+    $nameFrame.Visible = $isAccount
     foreach ($tab in $tabHome,$tabAccount,$tabNotes) {
         $tab.Font = if ($tab.Text -eq $page) {$tabBold} else {$tabRegular}
     }
@@ -354,9 +324,11 @@ $tabHome = Add-Button 'Inicio' 213 15 74 { Select-LauncherTab 'Inicio' }
 $tabAccount = Add-Button 'Cuenta' 292 15 85 { Select-LauncherTab 'Cuenta' }
 $tabNotes = Add-Button 'Notas de parche' 382 15 145 { Select-LauncherTab 'Notas de parche' }
 foreach ($tabButton in $tabHome,$tabAccount,$tabNotes) {
-    $tabButton.BackColor = [Drawing.Color]::FromArgb(100,40,7,15)
+    $tabButton.BackColor = [Drawing.Color]::Transparent
     $tabButton.FlatAppearance.BorderSize = 0
-    $tabButton.FlatAppearance.MouseOverBackColor = [Drawing.Color]::FromArgb(170,104,15,37)
+    $tabButton.FlatAppearance.MouseOverBackColor = [Drawing.Color]::Transparent
+    $tabButton.FlatAppearance.MouseDownBackColor = [Drawing.Color]::Transparent
+    $tabButton.Cursor = [Windows.Forms.Cursors]::Hand
 }
 Select-LauncherTab 'Inicio'
 $tabNotes.Font = $tabRegular
@@ -384,14 +356,10 @@ $play = Add-Button 'JUGAR' 38 426 208 {
     try {
         if (!$script:packReady) { Sync-Pack; $script:packReady = $true }
         $config.forge = '47.4.28'
-        $config.local = $account.Tag -eq 1
+        $config.local = $true
         $config.nombre = $nameBox.Text.Trim()
         if ($config.local -and $config.nombre -notmatch '^[A-Za-z0-9_]{3,16}$') {
             throw 'Usa un nombre de 3 a 16 caracteres con letras, numeros o guion bajo.'
-        }
-        if (!$config.local -and !$config.cliente) {
-            $config.cliente = (Get-Content (Join-Path $LauncherDirectory 'actualizaciones.json') -Raw | ConvertFrom-Json).microsoftClientId
-            if (!$config.cliente) { throw 'El acceso Premium está pendiente de configurar por Valystria.' }
         }
         $config | ConvertTo-Json | Set-Content $settingsFile -Encoding UTF8
         Select-LauncherTab 'Inicio'
@@ -499,7 +467,7 @@ except Exception as exc:
 $play.Font = New-Object Drawing.Font('Segoe UI Semibold',13)
 $play.FlatAppearance.BorderSize = 1
 $play.FlatAppearance.BorderColor = [Drawing.ColorTranslator]::FromHtml('#ff6677')
-$play.BackColor = [Drawing.Color]::FromArgb(145,148,13,39)
+$play.BackColor = [Drawing.Color]::FromArgb(90,148,13,39)
 $play.Cursor = [Windows.Forms.Cursors]::Hand
 $motion = @{ level=0; target=0; entrance=0 }
 $timer = New-Object Windows.Forms.Timer
@@ -509,7 +477,7 @@ $timer.Add_Tick({
     $form.Opacity = 0.65 + 0.35*$motion.entrance
     $motion.level += ($motion.target-$motion.level)*0.26
     if ([Math]::Abs($motion.level-$motion.target) -lt 0.02) { $motion.level=$motion.target }
-    $c = [Drawing.Color]::FromArgb(150,[int](148+66*$motion.level),[int](13+17*$motion.level),[int](39+24*$motion.level))
+    $c = [Drawing.Color]::FromArgb(94,[int](148+66*$motion.level),[int](13+17*$motion.level),[int](39+24*$motion.level))
     $play.BackColor=$c
     $play.FlatAppearance.MouseOverBackColor=$c
     $play.FlatAppearance.MouseDownBackColor=$c
@@ -525,9 +493,26 @@ $play.Add_LostFocus({ $motion.target=0; $timer.Start() })
 $form.Opacity=0.65
 $form.Add_Shown({ $timer.Start() })
 $clock = [Diagnostics.Stopwatch]::StartNew()
+$play.Add_Paint({
+    param($sender,$eventArgs)
+    $width = $sender.ClientSize.Width
+    $height = $sender.ClientSize.Height
+    $phase = ($clock.Elapsed.TotalSeconds % 3.2)/3.2
+    $left = [int](($width+125)*$phase)-107
+    $band = New-Object Drawing.Rectangle($left,0,104,$height)
+    $wave = New-Object Drawing.Drawing2D.LinearGradientBrush($band,[Drawing.Color]::Transparent,[Drawing.Color]::Transparent,12.0)
+    try {
+        $blend = New-Object Drawing.Drawing2D.ColorBlend
+        $blend.Positions = [single[]](0,.35,.58,1)
+        $blend.Colors = [Drawing.Color[]]@([Drawing.Color]::Transparent,[Drawing.Color]::FromArgb(48,230,32,66),[Drawing.Color]::FromArgb(102,255,115,94),[Drawing.Color]::Transparent)
+        $wave.InterpolationColors = $blend
+        $eventArgs.Graphics.FillRectangle($wave,$band)
+        [Windows.Forms.TextRenderer]::DrawText($eventArgs.Graphics,$sender.Text,$sender.Font,$sender.ClientRectangle,$sender.ForeColor,([Windows.Forms.TextFormatFlags]::HorizontalCenter -bor [Windows.Forms.TextFormatFlags]::VerticalCenter))
+    } finally { $wave.Dispose() }
+})
 $rain = New-Object Windows.Forms.PictureBox
 $rain.SetBounds(0,0,936,548)
-$rain.Image = $canvas.Clone($rain.Bounds,$canvas.PixelFormat)
+$rain.Image = $canvas
 $form.Controls.Add($rain)
 $rain.SendToBack()
 $rain.Add_Paint({
@@ -535,23 +520,15 @@ $rain.Add_Paint({
     $seconds = $clock.Elapsed.TotalSeconds
     $g=$eventArgs.Graphics
     $g.SmoothingMode='AntiAlias'
-    $blood=New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.Rectangle(0,0,12,10)),[Drawing.Color]::FromArgb(112,23,26),[Drawing.Color]::FromArgb(50,5,11),90.0)
-    $g.FillRectangle($blood,0,0,936,8)
-    $blood.Dispose()
-    foreach ($i in 0..35) {
-        $x=10+26*$i
-        $wave=(1-[Math]::Cos($seconds*(0.42+$i*0.025)+$i))/2
-        $end=[single](16+(14+(13*$i % 65))*$wave)
-        if($i -in 3,18,33){$end=[single](45+505*$wave)}
-        $path=New-Object Drawing.Drawing2D.GraphicsPath
-        $path.AddBezier($x-13,6,$x-5,6,$x-2,17,$x-2,$end-7)
-        $path.AddBezier($x-2,$end-7,$x-8,$end+4,$x+7,$end+4,$x+3,$end-6)
-        $path.AddBezier($x+3,$end-6,$x+2,20,$x+6,7,$x+13,6)
-        $path.CloseFigure()
-        $glaze=New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.Rectangle(($x-5),0,11,10)),[Drawing.Color]::FromArgb(50,3,9),[Drawing.Color]::FromArgb(143,42,37),0.0)
-        $g.FillPath($glaze,$path)
-        $g.FillEllipse([Drawing.Brushes]::RosyBrown,[single]($x+1),[single]($end-3),[single]1.8,[single]2.8)
-        $glaze.Dispose();$path.Dispose()
+    foreach ($i in 0..23) {
+        $duration = 2.3 + (7*$i % 13)/10
+        $phase = ($seconds/$duration + $i*0.618034) % 1
+        $size = 3 + ($i % 4)
+        $x = [single](10 + (347*$i % ($sender.Width-20)))
+        $y = [single](-20 + ($sender.Height+44)*$phase*(0.45+0.55*$phase))
+        $length = [single]($size*(1.2+1.2*$phase))
+        $g.FillEllipse([Drawing.Brushes]::DarkRed,$x,$y,[single]$size,$length)
+        $g.FillEllipse([Drawing.Brushes]::Firebrick,($x+1),($y+$length*0.4),[single]($size/2),[single]($size*0.7))
     }
 })
 $ambient = New-Object Windows.Forms.Timer
@@ -559,7 +536,7 @@ $ambient.Interval = 50
 $ambient.Add_Tick({
     if ($form.WindowState -eq 'Minimized') { return }
     $brand.Top = 12 + [int](4*[Math]::Sin(2*$clock.Elapsed.TotalSeconds))
-    $network.Invalidate();$rain.Invalidate()
+    $play.Invalidate();$network.Invalidate();$accountTitle.Invalidate();$rain.Invalidate()
 })
 $form.Add_Shown({ $ambient.Start() })
 $watcher = New-Object IO.FileSystemWatcher $config.carpeta
@@ -583,8 +560,8 @@ if ($splash) { $splash.Close() }
 $watcher.EnableRaisingEvents = $true
 try { [void]$form.ShowDialog() } finally { $watcher.Dispose() }
 $skinDelay.Dispose();$fonts.Dispose();$ambient.Dispose()
-$rain.Image.Dispose()
-$menu.Dispose()
+$rain.Image = $null
+
 $timer.Dispose()
 $form.Dispose()
 $canvas.Dispose()
