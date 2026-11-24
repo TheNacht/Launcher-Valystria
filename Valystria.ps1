@@ -1,4 +1,11 @@
 ﻿param([string]$LauncherDirectory = $(if ($env:VALYSTRIA_LAUNCHER_DIR) { $env:VALYSTRIA_LAUNCHER_DIR } else { $PSScriptRoot }))
+# Marcadores que los ejecutables distribuidos buscan literalmente. Conservar al publicar.
+# Interfaz Valystria 9
+# Interfaz Valystria 10
+# Interfaz Valystria 11
+# Interfaz Valystria 12
+# Interfaz Valystria 13
+# Interfaz Valystria 14
 # Interfaz Valystria 15
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
@@ -7,6 +14,36 @@ Add-Type -AssemblyName Microsoft.VisualBasic
 [Windows.Forms.Application]::EnableVisualStyles()
 $settingsDir = Join-Path $env:LOCALAPPDATA 'ValystriaOutbreak'
 [void][IO.Directory]::CreateDirectory($settingsDir)
+# Pin resources to the same revision so older executables can load this interface.
+$resourceRevision = '6ade05a7dd42e05f471848bed808d8847eda2ae6'
+$resourceHashes = @{
+    'outbreak.ico' = '1E1A05335FDCEB9DC2A58BD01DCB32D9CDBE5044C36683351AB8DD903C7F2D37'
+    'zombies.png' = 'FEC27ED6EEE66769D234FB59E9816951E19EE9EA5A51F32F6D376FCFE9EBBFE7'
+    'logo-outbreak.png' = '28BF2B8876A2FA3A7F55EBE8594BB5F9F9A3B50CE17BEF40B56D95F6A8493218'
+    'nemo-regular.ttf' = 'D0D3F7DE45BEB3BA0046C55BFD9F31DE739EA7AF171B953840C253241354729F'
+    'SkinPreview.cs' = @('8D1217BB3A4392862517F78D6C24986EA91BC3B7B75F526B0AAA91B2E1440940','C92F9E7E900D32CC69FDF01ECA30519CC760F27A5A18B043CA314836CB43F531')
+    'default-player.png' = '090DA8D92C9F54FCBEA87E6A2FB94125604A5A92A9ED6A52C10EE61C3B84BB79'
+}
+function Get-InterfaceResource([string]$name) {
+    $expected = $resourceHashes[$name]
+    $embedded = Join-Path $LauncherDirectory $name
+    if ((Test-Path -LiteralPath $embedded) -and $expected -contains (Get-FileHash -LiteralPath $embedded).Hash) { return $embedded }
+    $cache = Join-Path $settingsDir "interfaz/$resourceRevision"
+    [void][IO.Directory]::CreateDirectory($cache)
+    $target = Join-Path $cache $name
+    if ((Test-Path -LiteralPath $target) -and $expected -contains (Get-FileHash -LiteralPath $target).Hash) { return $target }
+    $temp = Join-Path $cache ([guid]::NewGuid().ToString())
+    try {
+        Invoke-WebRequest "https://raw.githubusercontent.com/TheNacht/Launcher-Valystria/$resourceRevision/$name" -UseBasicParsing -OutFile $temp -TimeoutSec 45
+        if ($expected -notcontains (Get-FileHash -LiteralPath $temp).Hash) { throw "Descarga incompleta de $name" }
+        try { [IO.File]::Move($temp,$target) }
+        catch [IO.IOException] {
+            if (!(Test-Path -LiteralPath $target)) { throw }
+            if ($expected -notcontains (Get-FileHash -LiteralPath $target).Hash) { [IO.File]::Replace($temp,$target,$null) }
+        }
+        return $target
+    } finally { if ([IO.File]::Exists($temp)) { [IO.File]::Delete($temp) } }
+}
 $settingsFile = Join-Path $settingsDir 'juego.json'
 $config = @{ carpeta=''; forge=''; cliente=''; local=$false; nombre='' }
 if (Test-Path $settingsFile) {
@@ -25,7 +62,7 @@ public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref i
 $form = New-Object Windows.Forms.Form
 $form.Text = 'Valystria Outbreak'
 $form.ClientSize = New-Object Drawing.Size(936,548)
-$iconPath = Join-Path $LauncherDirectory 'outbreak.ico'
+$iconPath = Get-InterfaceResource 'outbreak.ico'
 if (Test-Path -LiteralPath $iconPath) {
     $form.Icon = New-Object Drawing.Icon($iconPath, 32, 32)
 }
@@ -71,7 +108,7 @@ $close.AccessibleName = 'Cerrar'
 $form.Add_MouseDown({param($sender,$ev) if ($ev.Button -eq 'Left' -and $ev.Y -lt 78) { $script:dragStart = $ev.Location }})
 $form.Add_MouseMove({param($sender,$ev) if ($script:dragStart -and $ev.Button -eq 'Left') { $pointer=[Windows.Forms.Cursor]::Position; $form.Location = New-Object Drawing.Point(($pointer.X-$script:dragStart.X),($pointer.Y-$script:dragStart.Y)) }})
 $form.Add_MouseUp({ $script:dragStart=$null })
-$scene = [Drawing.Image]::FromFile((Join-Path $LauncherDirectory 'zombies.png'))
+$scene = [Drawing.Image]::FromFile((Get-InterfaceResource 'zombies.png'))
 $canvas = New-Object Drawing.Bitmap(936,548)
 $gfx = [Drawing.Graphics]::FromImage($canvas)
 $scale = [Math]::Max(936/$scene.Width,548/$scene.Height)
@@ -104,7 +141,7 @@ $brand = New-Object Windows.Forms.PictureBox
 $brand.SetBounds(27,12,52,52)
 $brand.SizeMode = 'Zoom'
 $brand.BackColor = [Drawing.Color]::Transparent
-$brand.Image = [Drawing.Image]::FromFile((Join-Path $LauncherDirectory 'logo-outbreak.png'))
+$brand.Image = [Drawing.Image]::FromFile((Get-InterfaceResource 'logo-outbreak.png'))
 $form.Controls.Add($brand)
 $network = Add-Label 'VALYSTRIA' 22 15 30
 $network.SetBounds(90,22,120,32)
@@ -113,7 +150,7 @@ $heading = Add-Label 'OUTBREAK' 291 46 87
 $heading.Font = New-Object Drawing.Font('Segoe UI Black',48)
 $heading.ForeColor = [Drawing.ColorTranslator]::FromHtml('#ffdee1')
 $fonts = New-Object Drawing.Text.PrivateFontCollection
-$fonts.AddFontFile((Join-Path $LauncherDirectory 'nemo-regular.ttf'))
+$fonts.AddFontFile((Get-InterfaceResource 'nemo-regular.ttf'))
 $heading.Text = ''
 $heading.AccessibleName = 'Outbreak'
 $heading.Visible = $false
@@ -282,9 +319,9 @@ $form.Add_FormClosing({
         else { [IO.File]::Move($tmp,$settingsFile) }
     } finally { if ([IO.File]::Exists($tmp)) { [IO.File]::Delete($tmp) } }
 })
-Add-Type -Path (Join-Path $LauncherDirectory 'SkinPreview.cs') -ReferencedAssemblies System.Drawing,System.Windows.Forms,System.Web.Extensions,System.Core
+Add-Type -Path (Get-InterfaceResource 'SkinPreview.cs') -ReferencedAssemblies System.Drawing,System.Windows.Forms,System.Web.Extensions,System.Core
 $avatar = New-Object SkinPreview
-$avatar.LoadDefault((Join-Path $LauncherDirectory 'default-player.png'))
+$avatar.LoadDefault((Get-InterfaceResource 'default-player.png'))
 $avatar.SetBounds(698,313,123,154)
 $avatar.BackColor = [Drawing.Color]::Transparent
 $avatar.SizeMode = 'Zoom'
